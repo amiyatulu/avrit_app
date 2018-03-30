@@ -1,0 +1,135 @@
+{% extends 'tracking/index.html' %}
+{% block content %}
+<div id="app">
+<h1 class="jumbotron "> [[ title ]] </h1>
+<div class="container">
+
+  
+
+   <div class="row list-group-item">
+
+    <div class="col">Title:</div>
+    <div class="col">{{post.title}}</div>
+   </div>
+  <div class="row list-group-item">
+     <div class="col">Type of Submission:</div>
+     <div class="col">{{post.get_type_of_submission_display}}</div>
+  </div>
+  <div class="row list-group-item">
+     <div class="col">Grade:</div>
+    <div class="col">{{post.grade}}</div>
+  </div>
+  <div class="row list-group-item">
+     <div class="col">Description:</div>
+     <div class="col">{{post.description}}</div>
+  </div>
+  <div class="row list-group-item">
+     <div class="col">Dat url:</div>
+    <div class="col"><a href="{{post.dat_link}}">{{post.dat_link}}</a></div>
+  </div>
+    <div class="row list-group-item">
+       <div class="col">Create time</div>
+    <div class="col">{{post.create_time}}</div>
+  </div>
+  <div class="row list-group-item">
+     <div class="col">Update time</div>
+    <div class="col">{{post.update_time}}</div>
+  </div>
+
+
+
+
+
+
+
+
+<br><br><br>
+    
+    <article>
+      <h3 class="jumbotron">Review</h3>
+       <p v-if="errors.length">
+    <b>Please correct the following error(s):</b>
+    <ul>
+      <li v-for="error in errors">[[error]] </li>
+    </ul>
+  </p>
+     <div class="form-group"><p> graphics </p>
+    <textarea class="form-control" v-model="graphics"></textarea></div>
+     <div class="form-group"><p> concrete </p>
+    <textarea class="form-control" v-model="concrete"></textarea></div>
+     <div class="form-group"><p> probing </p>
+    <textarea class="form-control" v-model="probing"></textarea></div>
+     <div class="form-group"><p>elaboration</p>
+    <textarea class="form-control" v-model="elaboration"></textarea></div>
+     <div class="form-group"><p> solved_problems </p>
+    <textarea class="form-control" v-model="solved_problems"></textarea></div>
+     <div class="form-group"><p>practice</p>
+    <textarea class="form-control" v-model="practice"></textarea></div>
+     <div class="form-group"><p>originality</p>
+    <textarea class="form-control" v-model="originality"> </textarea></div>
+     <div class="form-group"><p>typo_errors</p>
+    <textarea class="form-control" v-model="typo_errors"></textarea></div>
+     <div class="form-group"><p>deepness</p>
+    <textarea class="form-control" v-model="deepness"></textarea></div>
+     <div class="form-group"><p>comprehensible</p>
+    <textarea class="form-control" v-model="comprehensible"></textarea></div>
+     <div class="form-group"><p>overall_comments</p>
+    <textarea class="form-control" v-model="overall_comments"></textarea></div>
+     <div class="form-group"><p>dat_link</p>
+    <input class="form-control" v-model="dat_link"></div>
+    <div class="form-group">
+     <button  class="btn btn-primary btn-lg" v-on:click="submitForm">Submit</button> </div>
+  </article>
+
+</div>
+</div>
+<script>
+new Vue({
+  delimiters: ['[[', ']]'],
+  el: '#app',
+  data: {
+    title: 'Post Review',
+    graphics: "",
+    concrete: "",
+    probing: "",
+    elaboration: "",
+    solved_problems: "",
+    practice: "",
+    originality: "",
+    typo_errors: "",
+    deepness: "",
+    comprehensible: "",
+    overall_comments: "",
+    dat_link : "",
+    errors:[],
+  },
+  methods: {
+    submitForm: function (e) {
+      if(this.graphics && this.concrete && this.probing && this.elaboration && this.solved_problems && this.practice && 
+        this.originality && this.typo_errors && this.deepness && this.comprehensible && this.overall_comments && this.data_link){
+        return true;
+      } ;
+      this.errors = [];
+      if(!this.graphics) this.errors.push("Graphics required");
+      if(!this.concrete) this.errors.push("Concrete required.");
+      if(!this.probing) this.errors.push("Probing required.");
+      if(!this.elaboration) this.errors.push("Elaboration required.");
+      if(!this.solved_problems) this.errors.push("solved_problems required.");
+      if(!this.practice) this.errors.push("practice required.");
+      if(!this.originality) this.errors.push("originality required.");
+      if(!this.typo_errors) this.errors.push("typo_errors required.");
+      if(!this.deepness) this.errors.push("deepness required.");
+      if(!this.comprehensible) this.errors.push("comprehensible required.");
+      if(!this.overall_comments) this.errors.push("overall_comments required.");
+      if(!this.dat_link) this.errors.push("dat_link required.");
+      if(this.errors.length == 0){
+        console.log("hi");
+    
+      };
+      
+     
+    }
+  }
+})
+</script>
+{% endblock %}
