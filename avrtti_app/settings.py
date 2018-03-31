@@ -51,6 +51,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'avrtti_app.urls'
+CSRF_USE_SESSIONS = True
 
 TEMPLATES = [
     {

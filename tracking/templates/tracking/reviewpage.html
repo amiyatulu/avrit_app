@@ -1,5 +1,10 @@
 {% extends 'tracking/index.html' %}
 {% block content %}
+{% csrf_token %}
+<script type="text/javascript">
+// using jQuery
+var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+</script>
 <div id="app">
 <h1 class="jumbotron "> [[ title ]] </h1>
 <div class="container">
@@ -27,6 +32,10 @@
      <div class="col">Dat url:</div>
     <div class="col"><a href="{{post.dat_link}}">{{post.dat_link}}</a></div>
   </div>
+   <div class="row list-group-item">
+     <div class="col">Backup url:</div>
+    <div class="col"><a href="{{post.backup_link}}">{{post.backup_link}}</a></div>
+  </div>
     <div class="row list-group-item">
        <div class="col">Create time</div>
     <div class="col">{{post.create_time}}</div>
@@ -47,10 +56,10 @@
     
     <article>
       <h3 class="jumbotron">Review</h3>
-       <p v-if="errors.length">
+       <p v-if="form_errors.length">
     <b>Please correct the following error(s):</b>
     <ul>
-      <li v-for="error in errors">[[error]] </li>
+      <li v-for="err in form_errors">[[err]] </li>
     </ul>
   </p>
      <div class="form-group"><p> graphics </p>
@@ -67,16 +76,24 @@
     <textarea class="form-control" v-model="practice"></textarea></div>
      <div class="form-group"><p>originality</p>
     <textarea class="form-control" v-model="originality"> </textarea></div>
-     <div class="form-group"><p>typo_errors</p>
-    <textarea class="form-control" v-model="typo_errors"></textarea></div>
+     <div class="form-group"><p>errors</p>
+    <textarea class="form-control" v-model="errors"></textarea></div>
      <div class="form-group"><p>deepness</p>
     <textarea class="form-control" v-model="deepness"></textarea></div>
      <div class="form-group"><p>comprehensible</p>
     <textarea class="form-control" v-model="comprehensible"></textarea></div>
+    <div class="form-group"><p>cognitive_load</p>
+    <textarea class="form-control" v-model="cognitive_load"></textarea></div>
+    <div class="form-group"><p>big_ideas</p>
+    <textarea class="form-control" v-model="big_ideas"></textarea></div>
+    <div class="form-group"><p>evidence</p>
+    <textarea class="form-control" v-model="evidence"></textarea></div>
      <div class="form-group"><p>overall_comments</p>
     <textarea class="form-control" v-model="overall_comments"></textarea></div>
      <div class="form-group"><p>dat_link</p>
     <input class="form-control" v-model="dat_link"></div>
+    <div class="form-group"><p>backup_link</p>
+    <input class="form-control" v-model="backup_link"></div>
     <div class="form-group">
      <button  class="btn btn-primary btn-lg" v-on:click="submitForm">Submit</button> </div>
   </article>
@@ -89,41 +106,65 @@ new Vue({
   el: '#app',
   data: {
     title: 'Post Review',
-    graphics: "",
-    concrete: "",
-    probing: "",
-    elaboration: "",
-    solved_problems: "",
-    practice: "",
-    originality: "",
-    typo_errors: "",
-    deepness: "",
-    comprehensible: "",
-    overall_comments: "",
-    dat_link : "",
-    errors:[],
+    graphics: null,
+    concrete: null,
+    probing: null,
+    elaboration: null,
+    solved_problems: null,
+    practice: null,
+    originality: null,
+    errors: null,
+    deepness: null,
+    comprehensible: null,
+    cognitive_load: null,
+    big_ideas:null,
+    evidence: null,
+    overall_comments: null,
+    dat_link : null,
+    backup_link:null,
+    form_errors:[],
+    post_data:null,
+    datap:null,
   },
   methods: {
     submitForm: function (e) {
-      if(this.graphics && this.concrete && this.probing && this.elaboration && this.solved_problems && this.practice && 
-        this.originality && this.typo_errors && this.deepness && this.comprehensible && this.overall_comments && this.data_link){
-        return true;
-      } ;
-      this.errors = [];
-      if(!this.graphics) this.errors.push("Graphics required");
-      if(!this.concrete) this.errors.push("Concrete required.");
-      if(!this.probing) this.errors.push("Probing required.");
-      if(!this.elaboration) this.errors.push("Elaboration required.");
-      if(!this.solved_problems) this.errors.push("solved_problems required.");
-      if(!this.practice) this.errors.push("practice required.");
-      if(!this.originality) this.errors.push("originality required.");
-      if(!this.typo_errors) this.errors.push("typo_errors required.");
-      if(!this.deepness) this.errors.push("deepness required.");
-      if(!this.comprehensible) this.errors.push("comprehensible required.");
-      if(!this.overall_comments) this.errors.push("overall_comments required.");
-      if(!this.dat_link) this.errors.push("dat_link required.");
-      if(this.errors.length == 0){
+      this.form_errors = [];
+      if(!this.graphics) this.form_errors.push("Graphics required");
+      if(!this.concrete) this.form_errors.push("Concrete required.");
+      if(!this.probing) this.form_errors.push("Probing required.");
+      if(!this.elaboration) this.form_errors.push("Elaboration required.");
+      if(!this.solved_problems) this.form_errors.push("solved_problems required.");
+      if(!this.practice) this.form_errors.push("practice required.");
+      if(!this.originality) this.form_errors.push("originality required.");
+      if(!this.errors) this.form_errors.push("errors required.");
+      if(!this.deepness) this.form_errors.push("deepness required.");
+      if(!this.comprehensible) this.form_errors.push("comprehensible required.");
+      if(!this.cognitive_load) this.form_errors.push("cognitive_load required.");
+      if(!this.big_ideas) this.form_errors.push("big_ideas required.");
+      if(!this.evidence) this.form_errors.push("evidence required.");
+      if(!this.overall_comments) this.form_errors.push("overall_comments required.");
+      if(!this.dat_link) this.form_errors.push("dat_link required.");
+      if(this.form_errors.length == 0){
+        this.datap = {graphics:this.graphics,concrete:this.concrete, probing:this.probing, elaboration:this.elaboration,
+                 solved_problems:this.solved_problems, practice:this.practice, originality:this.originality,
+                 errors: this.errors, deepness: this.deepness, comprehensible: this.comprehensible, 
+                 cognitive_load: this.cognitive_load, big_ideas:this.big_ideas, evidence:this.evidence,
+                 overall_comments:this.overall_comments, dat_link:this.dat_link, backup_link:this.backup_link
+        }
+        console.log(this.datap)
+        this.$http.post("{% url 'tracking:ajaxcreatereview' post.id %}", this.datap, {
+           headers: {'X-CSRFToken': csrftoken}
+        }).then(response => {
+        response.status;
+        response.statusText;
+        response.headers.get('Expires');
+        this.post_data = response.body;
+
+        }, response => {
+    // error callback
+      });
         console.log("hi");
+        console.log(this.post_data)
     
       };
       
