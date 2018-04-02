@@ -54,8 +54,13 @@ var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
 
 <br><br><br>
     
-    <article>
+    
       <h3 class="jumbotron">Review</h3>
+      <article v-if="updated_seen">
+        <div v-html="updated_data"></div><br>
+        <button  class="btn btn-primary btn-lg" v-on:click="editForm">Edit</button>
+      </article>
+      <article v-if = "seen">
        <p v-if="form_errors.length">
     <b>Please correct the following error(s):</b>
     <ul>
@@ -101,11 +106,14 @@ var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
 </div>
 </div>
 <script>
+
 new Vue({
   delimiters: ['[[', ']]'],
   el: '#app',
   data: {
     title: 'Post Review',
+    seen: true,
+    updated_seen:false,
     graphics: null,
     concrete: null,
     probing: null,
@@ -125,6 +133,7 @@ new Vue({
     form_errors:[],
     post_data:null,
     datap:null,
+    updated_data:null,
   },
   methods: {
     submitForm: function (e) {
@@ -159,16 +168,25 @@ new Vue({
         response.statusText;
         response.headers.get('Expires');
         this.post_data = response.body;
+        console.log(this.post_data);
+        this.seen = false;
+        this.updated_seen = true;
+        this.updated_data = this.post_data
 
         }, response => {
     // error callback
       });
-        console.log("hi");
-        console.log(this.post_data)
+        
+        
+        
     
       };
       
      
+    },
+    editForm: function(){
+      this.seen=true;
+      this.updated_seen=false;
     }
   }
 })
