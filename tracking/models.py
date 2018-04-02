@@ -52,7 +52,7 @@ class Review(models.Model):
     originality = models.TextField()
     errors = models.TextField()
     deepness = models.TextField()
-    comprehensible = models.TextField()
+    preciseness = models.TextField()
     cognitive_load = models.TextField()
     big_ideas = models.TextField()
     evidence = models.TextField()

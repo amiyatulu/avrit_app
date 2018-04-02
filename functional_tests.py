@@ -4,42 +4,89 @@ import unittest
 import time
 
 class NewVisitorTest(unittest.TestCase):
-	def setUp(self):
-		self.browser = webdriver.Firefox(executable_path=r"geckodriver/geckodriver")
-	def tearDown(self):
-		time.sleep(8)
-		self.browser.quit()		
-	def test_tracking(self):
-		self.browser.get('http://localhost:8000/admin')
-		username = self.browser.find_element_by_xpath('//input[@id="id_username"]')
-		username.send_keys("admin")
-		password = self.browser.find_element_by_xpath('//input[@id="id_password"]')
-		password.send_keys('amiyaab123')
-		self.browser.find_element_by_xpath('//*[@id="login-form"]/div[3]/input').click()
-		self.browser.get('http://localhost:8000/tracking/submission')
-		self.assertIn("Avrtti", self.browser.title)
-		title = self.browser.find_element_by_xpath('//input[@id="id_title"]')
-		title.send_keys("Master in Computer Application")
-		selectbox = self.browser.find_element_by_xpath('//select[@id="id_type_of_submission"]')
-		all_options = selectbox.find_elements_by_tag_name("option")
-		for option in all_options:
-		    print("Value is: %s" % option.get_attribute("value"))
-		    print(option.text)
-		    if option.text == "Workbook":
-		    	option.click()
+    def setUp(self):
+        self.browser = webdriver.Firefox(executable_path=r"geckodriver/geckodriver")
+    def tearDown(self):
+        time.sleep(8)
+        self.browser.quit()     
+    def test_tracking(self):
+        self.browser.get('http://localhost:8000/admin')
+        username = self.browser.find_element_by_xpath('//input[@id="id_username"]')
+        username.send_keys("admin")
+        password = self.browser.find_element_by_xpath('//input[@id="id_password"]')
+        password.send_keys('amiyaab123')
+        self.browser.find_element_by_xpath('//*[@id="login-form"]/div[3]/input').click()
+        self.browser.get('http://localhost:8000/tracking/submission')
+        self.assertIn("Avrtti", self.browser.title)
+        title = self.browser.find_element_by_xpath('//input[@id="id_title"]')
+        title.send_keys("Master in Computer Application")
+        selectbox = self.browser.find_element_by_xpath('//select[@id="id_type_of_submission"]')
+        all_options = selectbox.find_elements_by_tag_name("option")
+        for option in all_options:
+            print("Value is: %s" % option.get_attribute("value"))
+            print(option.text)
+            if option.text == "Workbook":
+                option.click()
 
-		grade = self.browser.find_element_by_xpath('//input[@id="id_grade"]')
-		grade.send_keys("Masters")
-		subject = self.browser.find_element_by_xpath('//input[@id="id_subject"]')
-		subject.send_keys("Data Structure")
-		description = self.browser.find_element_by_xpath('//textarea[@id="id_description"]')
-		description.send_keys("Data Structure")
-		url = self.browser.find_element_by_xpath('//input[@id="id_dat_link"]')
-		url.send_keys("dat://mca-amiyatulu.hashbase.io")
-		self.browser.find_element_by_id("submitbutton").click()
-		self.fail('Finish the test!')
+        grade = self.browser.find_element_by_xpath('//input[@id="id_grade"]')
+        grade.send_keys("Masters")
+        subject = self.browser.find_element_by_xpath('//input[@id="id_subject"]')
+        subject.send_keys("Data Structure")
+        description = self.browser.find_element_by_xpath('//textarea[@id="id_description"]')
+        description.send_keys("Data Structure")
+        url = self.browser.find_element_by_xpath('//input[@id="id_dat_link"]')
+        url.send_keys("dat://mca-amiyatulu.hashbase.io")
+        self.browser.find_element_by_id("submitbutton").click()
+    def test_zreview(self):
+        self.browser.get('http://localhost:8000/admin')
+        username = self.browser.find_element_by_xpath('//input[@id="id_username"]')
+        username.send_keys("admin")
+        password = self.browser.find_element_by_xpath('//input[@id="id_password"]')
+        password.send_keys('amiyaab123')
+        self.browser.find_element_by_xpath('//*[@id="login-form"]/div[3]/input').click()
+        self.browser.get('http://localhost:8000/tracking/reviewpage/1')
+        graphics = self.browser.find_element_by_xpath('//textarea[@id="id_graphics"]')
+        graphics.send_keys("graphics")
+        concrete = self.browser.find_element_by_xpath('//textarea[@id="id_concrete"]')
+        concrete.send_keys("concrete")
+        probing = self.browser.find_element_by_xpath('//textarea[@id="id_probing"]')
+        probing.send_keys('probing')
+        elaboration = self.browser.find_element_by_xpath('//textarea[@id="id_elaboration"]')
+        elaboration.send_keys("elaboration")
+        solved_problems = self.browser.find_element_by_xpath('//textarea[@id="id_solved_problems"]')
+        solved_problems.send_keys("solved_problems")
+        practice = self.browser.find_element_by_xpath('//textarea[@id="id_practice"]')
+        practice.send_keys("practice")
+        originality = self.browser.find_element_by_xpath('//textarea[@id="id_originality"]')
+        originality.send_keys("originality")
+        errors = self.browser.find_element_by_xpath('//textarea[@id="id_errors"]')
+        errors.send_keys("errors")
+        deepness = self.browser.find_element_by_xpath('//textarea[@id="id_deepness"]')
+        deepness.send_keys("deepness")
+        preciseness = self.browser.find_element_by_xpath('//textarea[@id="id_preciseness"]')
+        preciseness.send_keys("preciseness")
+        cognitive_load = self.browser.find_element_by_xpath('//textarea[@id="id_cognitive_load"]')
+        cognitive_load.send_keys("cognitive_load")
+        big_ideas = self.browser.find_element_by_xpath('//textarea[@id="id_big_ideas"]')
+        big_ideas.send_keys("big_ideas")
+        evidence = self.browser.find_element_by_xpath('//textarea[@id="id_evidence"]')
+        evidence.send_keys("evidence")
+        overall_comments = self.browser.find_element_by_xpath('//textarea[@id="id_overall_comments"]')
+        overall_comments.send_keys("overall_comments")
+        dat_link = self.browser.find_element_by_xpath('//input[@id="id_dat_link"]')
+        dat_link.send_keys("dat_link")
+        backup_link = self.browser.find_element_by_xpath('//input[@id="id_backup_link"]')
+        backup_link.send_keys("backup_link")
+        time.sleep(8)
+
+        ajax_submission = self.browser.find_element_by_id("id_ajax_submission").click()
+        time.sleep(50)
+
+        
+
+    
 
 
 if __name__ == "__main__":
-	unittest.main()
+    unittest.main()
 

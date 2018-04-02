@@ -44,14 +44,14 @@ def ajaxcreatereview(request,pid):
         originality = data.get('originality')
         errors = data.get('errors')
         deepness = data.get('deepness')
-        comprehensible = data.get('comprehensible')
+        preciseness = data.get('preciseness')
         cognitive_load = data.get('cognitive_load')
         big_ideas = data.get('big_ideas')
         evidence = data.get('evidence')
         overall_comments = data.get('overall_comments')
         dat_link = data.get('dat_link')
         backup_link = data.get('backup_link')
-        if not graphics and not concrete and not probing and not elaboration and not solved_problems and not practice and not originality and not errors and not deepness and not comprehensible and not cognitive_load and not big_ideas and not evidence and not overall_comments:
+        if not graphics and not concrete and not probing and not elaboration and not solved_problems and not practice and not originality and not errors and not deepness and not preciseness and not cognitive_load and not big_ideas and not evidence and not overall_comments:
             return render(request,'tracking/pagenotfound.html') 
 
         else:
@@ -59,7 +59,7 @@ def ajaxcreatereview(request,pid):
                 post_id = pid,
                 user=request.user,
                 defaults={
-                "graphics":graphics, "concrete": concrete, "probing": probing, "elaboration": elaboration, "solved_problems": solved_problems, "practice": practice, "originality": originality, "errors": errors, "deepness": deepness, "comprehensible": comprehensible, "cognitive_load": cognitive_load, "big_ideas": big_ideas, "evidence": evidence, "overall_comments": overall_comments,"dat_link": dat_link, "backup_link": backup_link
+                "graphics":graphics, "concrete": concrete, "probing": probing, "elaboration": elaboration, "solved_problems": solved_problems, "practice": practice, "originality": originality, "errors": errors, "deepness": deepness, "preciseness": preciseness, "cognitive_load": cognitive_load, "big_ideas": big_ideas, "evidence": evidence, "overall_comments": overall_comments,"dat_link": dat_link, "backup_link": backup_link
                 }
                 )
             print(created)
