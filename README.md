@@ -2,4 +2,4 @@
 
 ## āvṛtti
 āvṛtti (Sanskrit): turn of path or way, course, process, direction   
-A web app for reviewing quality of study material or content, assignments, projects, practicals and assessments. 
+A decentralized way of designing and reviewing the quality of study material or content, assignments, projects, practicals and assessments. 
