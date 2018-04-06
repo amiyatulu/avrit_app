@@ -1,12 +1,25 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.sites.shortcuts import get_current_site
 from tracking.models import PostForm, Post, Review
+from tracking.forms import SignUpForm, ProfileForm
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 import json
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
+from django.template.loader import render_to_string
+from tracking.tokens import account_activation_token
+from django.utils.encoding import force_text
+from django.utils.http import urlsafe_base64_decode
+from django.contrib.auth.models import User
 
 
 
 # Create your views here.
+def home(request):
+    return render(request, 'tracking/home.html')
 
 def postSubmission(request):
     if request.method == 'POST':
@@ -70,4 +83,47 @@ def reviewPage(request, pid):
         post = get_object_or_404(Post, id=pid)
         review = Review.objects.filter(post=post)
         return render(request, 'tracking/reviewpage.html', {'post':post, 'review':review})
+
+def signup(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST, prefix="usr")
+        profile_form = ProfileForm(request.POST, prefix='loc')
+        if form.is_valid() and profile_form.is_valid():
+            user = form.save(commit=False)
+            user.is_active = False
+            user._bio = profile_form.cleaned_data['bio']
+            user.save()
+            current_site = get_current_site(request)
+            subject = 'Activate Your MySite Account'
+            message = render_to_string('tracking/account_activation_email.html', {
+                'user': user,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)).decode(),
+                'token': account_activation_token.make_token(user),
+            })
+            user.email_user(subject, message)
+            return redirect('tracking:account_activation_sent')
+    else:
+        form = SignUpForm(prefix="usr")
+        profile_form = ProfileForm(prefix='loc')
+    return render(request, 'tracking/signup.html', {'form': form, 'profile_form': profile_form})
+
+def activate(request, uidb64, token):
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.profile.email_confirmed = True
+        user.save()
+        login(request, user)
+        return redirect('tracking:home')
+    else:
+        return render(request, 'tracking/account_activation_invalid.html')
+
+def account_activation_sent(request):
+    return render(request, 'tracking/account_activation_sent.html')
 

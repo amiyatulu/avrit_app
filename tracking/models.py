@@ -3,7 +3,23 @@ from django.contrib.auth.models import User
 import datetime
 from django.utils.timezone import utc
 from django.forms.models import ModelForm
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    email_confirmed = models.BooleanField(default=False)
+    bio = models.TextField(max_length=500, blank=True)
+    # other fields...
+
+@receiver(post_save, sender=User)
+def update_user_profile(sender, instance, created, **kwargs):
+    if created:
+        attr_needed = ['_bio']
+        if all(hasattr(instance, attr) for attr in attr_needed):
+            Profile.objects.create(user=instance, bio=instance._bio)
 
 # Create your models here.
 class Post(models.Model):
