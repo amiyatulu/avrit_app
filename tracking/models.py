@@ -28,6 +28,8 @@ class Post(models.Model):
               ('CG','Curriculum Guide'),
               ('TK','Assignment Task'), 
               ('WB','Workbook'),
+              ('PC', 'Practical'),
+              ('PJ', 'Project')
                 )
     type_of_submission = models.CharField(max_length = 3, choices= SUB_TYPE)
     grade = models.CharField(max_length=500)

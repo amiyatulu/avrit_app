@@ -15,9 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from tracking import views as tracking_views
 
 urlpatterns = [
 	path('tracking/', include('tracking.urls')),
 	path('',include('django.contrib.auth.urls')),
     path('admin/', admin.site.urls),
+    path('', tracking_views.home, name="myhome"),
 ]
