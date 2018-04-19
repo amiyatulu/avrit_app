@@ -1,0 +1,59 @@
+    <div>
+      <h3 class="jumbotron">[[ title ]]</h3>
+      <article v-if="updated_seen">
+        <div v-html="updated_data"></div><br>
+        <button  class="btn btn-primary btn-lg" v-on:click="editForm">Edit</button>
+      </article>
+      <article v-if = "seen">
+       <p v-if="form_errors.length">
+    <b>Please correct the following error(s):</b>
+    <ul>
+      <li v-for="err in form_errors">[[err]] </li>
+    </ul>
+  </p>
+  <h3>Narrate how the content implements or didn't implement these strategies? Specify the section where these strategies can be appositely applied, if not used.</h3> <br><br>
+     <div class="form-group"><h4>Pairing graphics with words: </h4>
+      <p>Because people receive information through two primary pathways — auditory and visual — student learning increases when teachers convey new material both verbally and through graphics that convey key concepts and ideas. Graphics include illustrations, diagrams, and flow charts, as well as animation or video. Simple images in drawings or photos are not sufficient, unless they are carefully chosen to convey entire concepts.</p>
+
+    <textarea class="form-control" id="id_graphics" v-model="graphics"></textarea></div>
+     <div class="form-group"><h4>Linking abstract concepts with concrete representations: </h4>
+      <p>Presenting concrete examples helps students understand new ideas, while connecting those examples to abstract ideas allows students to apply concepts in new situations. For example, teaching young students the general principle that all organisms are adapted to their environments will help them to see that squirrels — and not just more exotic animals like polar bears — must cope with their local weather.<br>
+Despite the common belief that young children can only understand concrete information (which implies that concrete examples are most important in elementary grades and less so later), some appropriately presented abstractions can be understood by young children and concrete examples can be important learning tools for individuals of all ages.
+</p>
+    <textarea class="form-control" id="id_concrete" v-model="concrete"></textarea></div>
+     <div class="form-group"><p> probing </p>
+    <textarea class="form-control" id="id_probing" v-model="probing"></textarea></div>
+     <div class="form-group"><p>elaboration</p>
+    <textarea class="form-control" id="id_elaboration" v-model="elaboration"></textarea></div>
+     <div class="form-group"><p> solved_problems </p>
+    <textarea class="form-control" id="id_solved_problems" v-model="solved_problems"></textarea></div>
+     <div class="form-group"><p>practice</p>
+    <textarea class="form-control" id="id_practice" v-model="practice"></textarea></div>
+     <div class="form-group"><p>originality</p>
+    <textarea class="form-control" id="id_originality" v-model="originality"> </textarea></div>
+     <div class="form-group"><p>errors</p>
+    <textarea class="form-control" id="id_errors" v-model="errors"></textarea></div>
+     <div class="form-group"><p>deepness</p>
+    <textarea class="form-control" id="id_deepness" v-model="deepness"></textarea></div>
+     <div class="form-group"><p>preciseness</p>
+    <textarea class="form-control" id="id_preciseness" v-model="preciseness"></textarea></div>
+    <div class="form-group"><p>cognitive_load</p>
+    <textarea class="form-control" id="id_cognitive_load" v-model="cognitive_load"></textarea></div>
+    <div class="form-group"><p>big_ideas</p>
+    <textarea class="form-control" id="id_big_ideas" v-model="big_ideas"></textarea></div>
+    <div class="form-group"><p>evidence</p>
+    <textarea class="form-control" id="id_evidence" v-model="evidence"></textarea></div>
+     <div class="form-group"><p>overall_comments</p>
+    <textarea class="form-control" id="id_overall_comments" v-model="overall_comments"></textarea></div>
+     <div class="form-group"><p>dat_link</p>
+    <input class="form-control" id="id_dat_link" v-model="dat_link"></div>
+    <div class="form-group"><p>backup_link</p>
+    <input class="form-control" id="id_backup_link" v-model="backup_link"></div>
+    <div class="form-group">
+     <button  class="btn btn-primary btn-lg" id="id_ajax_submission" v-on:click="submitForm">Submit</button> </div>
+  </article>
+
+</div>
+</div>
+</div>
+

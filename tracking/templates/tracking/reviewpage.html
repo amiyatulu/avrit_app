@@ -1,13 +1,21 @@
 {% extends 'tracking/index.html' %}
+
+ {% load staticfiles %}
+{% block endscript %}
+<script>
+  var ajaxreview = "{% url 'tracking:ajaxcreatereview' post.id %}";
+</script>
+<script src="{% static 'tracking/review_form.js' %}"></script>
+{% endblock %}
 {% block content %}
 {% csrf_token %}
 <script type="text/javascript">
 // using jQuery
 var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
 </script>
-<div id="app">
-<h1 class="jumbotron "> [[ title ]] </h1>
-<div class="container">
+
+<h1 class="jumbotron "> Review </h1>
+<div id="app" class="container">
 
   
 
@@ -45,22 +53,19 @@ var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
     <div class="col">{{post.update_time}}</div>
   </div>
 
+  <br><br><br>
+  <br><br><br>
+  <div>
+<h3 class="jumbotron">[[ title ]]</h3>
+{% for review in reviewlist %}
 
+{% if review.user_id == user.id %}
 
-
-
-
-
-
-<br><br><br>
-    
-    
-      <h3 class="jumbotron">Review</h3>
-      <article v-if="updated_seen">
+<article v-if="updated_seen">
         <div v-html="updated_data"></div><br>
         <button  class="btn btn-primary btn-lg" v-on:click="editForm">Edit</button>
       </article>
-      <article v-if = "seen">
+      <article v-if = "seen2">
        <p v-if="form_errors.length">
     <b>Please correct the following error(s):</b>
     <ul>
@@ -108,93 +113,125 @@ Despite the common belief that young children can only understand concrete infor
     <div class="form-group">
      <button  class="btn btn-primary btn-lg" id="id_ajax_submission" v-on:click="submitForm">Submit</button> </div>
   </article>
+<div v-if="first_view" >
+{% else %}
+<div>
+{% endif %}
+<div class="row list-group-item">
 
-</div>
-</div>
-<script>
+    <div class="col">Graphics:</div>
+    <div class="col">{{review.graphics}}</div>
+   </div>
+ <div class="row list-group-item">
 
-new Vue({
-  delimiters: ['[[', ']]'],
-  el: '#app',
-  data: {
-    title: 'Post Review',
-    seen: true,
-    updated_seen:false,
-    graphics: null,
-    concrete: null,
-    probing: null,
-    elaboration: null,
-    solved_problems: null,
-    practice: null,
-    originality: null,
-    errors: null,
-    deepness: null,
-    preciseness: null,
-    cognitive_load: null,
-    big_ideas:null,
-    evidence: null,
-    overall_comments: null,
-    dat_link : null,
-    backup_link:null,
-    form_errors:[],
-    post_data:null,
-    datap:null,
-    updated_data:null,
-  },
-  methods: {
-    submitForm: function (e) {
-      this.form_errors = [];
-      if(!this.graphics) this.form_errors.push("Graphics required");
-      if(!this.concrete) this.form_errors.push("Concrete required.");
-      if(!this.probing) this.form_errors.push("Probing required.");
-      if(!this.elaboration) this.form_errors.push("Elaboration required.");
-      if(!this.solved_problems) this.form_errors.push("solved_problems required.");
-      if(!this.practice) this.form_errors.push("practice required.");
-      if(!this.originality) this.form_errors.push("originality required.");
-      if(!this.errors) this.form_errors.push("errors required.");
-      if(!this.deepness) this.form_errors.push("deepness required.");
-      if(!this.preciseness) this.form_errors.push("preciseness required.");
-      if(!this.cognitive_load) this.form_errors.push("cognitive_load required.");
-      if(!this.big_ideas) this.form_errors.push("big_ideas required.");
-      if(!this.evidence) this.form_errors.push("evidence required.");
-      if(!this.overall_comments) this.form_errors.push("overall_comments required.");
-      if(!this.dat_link) this.form_errors.push("dat_link required.");
-      if(this.form_errors.length == 0){
-        this.datap = {graphics:this.graphics,concrete:this.concrete, probing:this.probing, elaboration:this.elaboration,
-                 solved_problems:this.solved_problems, practice:this.practice, originality:this.originality,
-                 errors: this.errors, deepness: this.deepness, preciseness: this.preciseness, 
-                 cognitive_load: this.cognitive_load, big_ideas:this.big_ideas, evidence:this.evidence,
-                 overall_comments:this.overall_comments, dat_link:this.dat_link, backup_link:this.backup_link
-        }
-        console.log(this.datap)
-        this.$http.post("{% url 'tracking:ajaxcreatereview' post.id %}", this.datap, {
-           headers: {'X-CSRFToken': csrftoken}
-        }).then(response => {
-        response.status;
-        response.statusText;
-        response.headers.get('Expires');
-        this.post_data = response.body;
-        console.log(this.post_data);
-        this.seen = false;
-        this.updated_seen = true;
-        this.updated_data = this.post_data
+    <div class="col">concrete:</div>
+    <div class="col">{{review.concrete}}</div>
+   </div>
+   <div class="row list-group-item">
 
-        }, response => {
-    // error callback
-      });
-        
-        
-        
-    
-      };
-      
-     
-    },
-    editForm: function(){
-      this.seen=true;
-      this.updated_seen=false;
-    }
-  }
-})
-</script>
+    <div class="col">Probing:</div>
+    <div class="col">{{review.probing}}</div>
+   </div>
+   <div class="row list-group-item">
+
+    <div class="col">elaboration:</div>
+    <div class="col">{{review.elaboration}}</div>
+   </div>
+   <div class="row list-group-item">
+
+    <div class="col">Solved_problems:</div>
+    <div class="col">{{review.solved_problems}}</div>
+   </div>
+   <div class="row list-group-item">
+
+    <div class="col">Practice:</div>
+    <div class="col">{{review.practice}}</div>
+   </div>
+   <div class="row list-group-item">
+
+    <div class="col">Originality:</div>
+    <div class="col">{{review.originality}}</div>
+   </div>
+   <div class="row list-group-item">
+
+    <div class="col">Errors:</div>
+    <div class="col">{{review.errors}}</div>
+   </div>
+   <div class="row list-group-item">
+
+    <div class="col">Deepness:</div>
+    <div class="col">{{review.deepness}}</div>
+   </div>
+   <div class="row list-group-item">
+
+    <div class="col">preciseness:</div>
+    <div class="col">{{review.preciseness}}</div>
+   </div>
+   <div class="row list-group-item">
+
+    <div class="col">Cognitive load:</div>
+    <div class="col">{{review.cognitive_load}}</div>
+   </div>
+   <div class="row list-group-item">
+
+    <div class="col">Big ideas:</div>
+    <div class="col">{{review.big_ideas}}</div>
+   </div>
+   <div class="row list-group-item">
+
+    <div class="col">Evidence:</div>
+    <div class="col">{{review.evidence}}</div>
+   </div>
+   <div class="row list-group-item">
+
+    <div class="col">Overall Comments:</div>
+    <div class="col">{{review.overall_comments}}</div>
+   </div>
+   <div class="row list-group-item">
+
+    <div class="col">Dat link:</div>
+    <div class="col">{{review.dat_link}}</div>
+   </div>
+   <div class="row list-group-item">
+
+    <div class="col">Backup Link:</div>
+    <div class="col">{{review.backup_link}}</div>
+   </div>
+   <div class="row list-group-item">
+
+    <div class="col">Create Time:</div>
+    <div class="col">{{review.create_time}}</div>
+   </div>
+   <div class="row list-group-item">
+
+    <div class="col">Update Time:</div>
+    <div class="col">{{review.update_time}}</div>
+   </div>
+   {% if review.user_id == user.id %}
+   <div class="row list-group-item">
+
+    <div class="col">Edit link:</div>
+    <button class="btn btn-primary btn-lg" v-on:click="get_edit_form(url='{% url 'tracking:reviewjson' review.id %}')">Edit</button>
+  
+   </div>
+   {% endif %}
+
+
+
+</div>   
+
+{% endfor %}
+ </div>
+
+
+
+<br><br><br>
+{{userexists}}
+{{post.user_id}}
+{{ user.id}}
+{% if not userexists and post.user_id != user.id %}
+{% include "tracking/review_form.html" %}
+{% endif %}
+ 
 {% endblock %}
+</div>

@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.sites.shortcuts import get_current_site
 from tracking.models import PostForm, Post, Review
 from tracking.forms import SignUpForm, ProfileForm
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 import json
 from django.contrib.auth import login, authenticate
@@ -14,6 +14,8 @@ from tracking.tokens import account_activation_token
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.core import serializers
 
 
 
@@ -21,6 +23,7 @@ from django.contrib.auth.models import User
 def home(request):
     return render(request, 'tracking/home.html')
 
+@login_required
 def postSubmission(request):
     if request.method == 'POST':
         form = PostForm(request.POST)
@@ -35,17 +38,23 @@ def postSubmission(request):
         form = PostForm()
     return render(request,'tracking/post.html',{'form':form,
                                                        })
-def postview(request,pid):
-    try:
-        post = Post.objects.get(pk=pid)
-        if post.user_id != request.user.id:
-            return render(request,'tracking/pagenotfound.html')
-    except:
-        return render(request,'tracking/pagenotfound.html')
-    return render(request,'tracking/submissiondetail.html',{"post":post}) 
 
+@login_required
+def postview(request,pid):
+    post = get_object_or_404(Post, pk=pid)
+    if post.user_id == request.user.id:
+        return render(request,'tracking/submissiondetail.html',{"post":post})
+    else:
+        return render(request,'tracking/pagenotfound.html') 
+    
+        
+
+@login_required
 def ajaxcreatereview(request,pid):
-    if request.method == 'POST' and request.is_ajax():
+    post = get_object_or_404(Post, pk=pid)
+    if post.user_id == request.user.id:
+        return render(request,'tracking/pagenotfound.html')
+    elif request.method == 'POST' and request.is_ajax():
         data = json.loads(request.body)
         print(data)
         graphics = data.get('graphics')
@@ -77,12 +86,22 @@ def ajaxcreatereview(request,pid):
                 )
             print(created)
             print(review)
-        return render(request, 'tracking/createreview.html', {'review':review, 'pid':pid})
+        return render(request, 'tracking/viewreview.html', {'review':review, 'pid':pid})
 
+
+@login_required
 def reviewPage(request, pid):
-        post = get_object_or_404(Post, id=pid)
-        review = Review.objects.filter(post=post)
-        return render(request, 'tracking/reviewpage.html', {'post':post, 'review':review})
+    post = get_object_or_404(Post, id=pid)
+    review = Review.objects.filter(post=post)
+    userexitsquery = review.filter(user=request.user)
+    if userexitsquery:
+        userexists = True
+    else:
+        userexists = False
+    print(post.user_id)
+    print(request.user.id)
+    print(userexists)
+    return render(request, 'tracking/reviewpage.html', {'post':post, 'reviewlist':review, 'userexists': userexists})
 
 def signup(request):
     if request.method == 'POST':
@@ -127,3 +146,12 @@ def activate(request, uidb64, token):
 def account_activation_sent(request):
     return render(request, 'tracking/account_activation_sent.html')
 
+
+def getReview(request, rid):
+    review = get_object_or_404(Review, id=rid)
+    data = serializers.serialize("json", [review,] )
+    return HttpResponse(data)
+
+
+def htmlreviewform(request):
+    return render(request, 'tracking/review_form.html')
