@@ -19,7 +19,7 @@ from django.core import serializers
 
 
 
-# Create your views here.
+# Create your views here.abc
 def home(request):
     return render(request, 'tracking/home.html')
 
